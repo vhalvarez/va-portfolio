@@ -1,5 +1,8 @@
+import About from "@/components/About";
+import { Experience } from "@/components/Experience";
 import Hero from "@/components/Hero";
 import HeroImageSection from "@/components/HeroImageSection";
+import Skills from "@/components/Skills";
 import UpNavbar from "@/components/UpNavbar";
 
 export default function Page() {
@@ -8,9 +11,17 @@ export default function Page() {
       <UpNavbar />
       <Hero />
 
-      <section className="h-[200vh] bg-neutral-900">
+      <section className="h-[100vh] bg-neutral-900">
         <HeroImageSection />
       </section>
+
+      <section className=" bg-neutral-900">
+        <Skills />
+      </section>
+
+      <Experience />
+
+      <About />
 
       {/* <main className="w-screen px-[5vw] py-16 space-y-24">
         <section id="work" className="min-h-[60vh]">

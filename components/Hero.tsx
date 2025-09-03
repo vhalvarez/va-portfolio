@@ -1,17 +1,52 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
+import { PointerHighlight } from "./ui/pointer-highlight";
 
 export default function Hero() {
   const [ready, setReady] = useState(false);
+  const [highlightVisible, setHighlightVisible] = useState(false);
+  const pointerTimerRef = useRef<number | null>(null);
 
+  // Escucha fin de Splash para animar títulos/subtítulos
   useEffect(() => {
     const markReady = () => setReady(true);
+
     if (typeof document !== "undefined" && document.documentElement.classList.contains("splash-done")) {
       setReady(true);
     }
     window.addEventListener("splash:done", markReady);
     return () => window.removeEventListener("splash:done", markReady);
+  }, []);
+
+  // Cuando TERMINAN los subtítulos del hero (evento ya existente en tu flujo),
+  // arrancamos el contador de 5s para el PointerHighlight
+  useEffect(() => {
+    const startPointerDelay = () => {
+      // Por seguridad, limpia cualquier timer previo
+      if (pointerTimerRef.current) {
+        window.clearTimeout(pointerTimerRef.current);
+        pointerTimerRef.current = null;
+      }
+      pointerTimerRef.current = window.setTimeout(() => {
+        setHighlightVisible(true);
+        pointerTimerRef.current = null;
+      }, 5000); // ⟵ 5s
+    };
+
+    // Si el evento ya se emitió antes de montar este componente (fallback)
+    if (typeof document !== "undefined" && document.documentElement.classList.contains("hero-subs-done")) {
+      startPointerDelay();
+    }
+
+    window.addEventListener("hero:subs:done", startPointerDelay);
+    return () => {
+      window.removeEventListener("hero:subs:done", startPointerDelay);
+      if (pointerTimerRef.current) {
+        window.clearTimeout(pointerTimerRef.current);
+        pointerTimerRef.current = null;
+      }
+    };
   }, []);
 
   const TITLE_DUR = 0.8;
@@ -22,22 +57,25 @@ export default function Hero() {
     []
   );
 
-  // usa el cubic-bezier directamente (ease-out personalizado)
   const easeOutCustom = [0.22, 1, 0.36, 1] as const;
 
   const titleUp = {
     off: { y: 80, opacity: 0 },
-    on:  { y: 0,  opacity: 1 },
+    on:  { y: 0, opacity: 1 },
   };
 
   const subsUp = {
     off: { y: 40, opacity: 0 },
-    on:  { y: 0,  opacity: 1 },
+    on:  { y: 0, opacity: 1 },
   };
 
   return (
-    <section id="home" className="bg-neutral-900 text-white pt-[72px] sm:pt-[84px] lg:pt-[96px] pb-8 sm:pb-10">
+    <section
+      id="home"
+      className="bg-neutral-900 text-white pt-[72px] sm:pt-[84px] lg:pt-[96px] pb-8 sm:pb-10"
+    >
       <div className="px-4 sm:px-6 lg:px-8 min-h-0 md:min-h-[calc(60svh-96px)] flex flex-col">
+        {/* Título 1 */}
         <motion.h1
           variants={titleUp}
           initial="off"
@@ -48,6 +86,7 @@ export default function Hero() {
           VICTOR
         </motion.h1>
 
+        {/* Título 2 */}
         <motion.h1
           variants={titleUp}
           initial="off"
@@ -58,12 +97,14 @@ export default function Hero() {
           ALVAREZ
         </motion.h1>
 
+        {/* Subtítulos */}
         <motion.div
           variants={subsUp}
           initial="off"
           animate={ready ? "on" : "off"}
           transition={{ duration: 0.8, ease: easeOutCustom, delay: subtitlesDelay }}
           onAnimationComplete={() => {
+            // Emite el evento que orquesta navbar + heroImage (y ahora dispara el timer del highlight)
             document.documentElement.classList.add("hero-subs-done");
             window.dispatchEvent(new Event("hero:subs:done"));
           }}
@@ -74,11 +115,18 @@ export default function Hero() {
             <br />
             BASED IN CARACAS
           </p>
-          <p className="md:text-right">
+
+          <div className="md:text-right uppercase text-white text-center">
             SPECIALIZING IN
             <br />
-            FRAMER AND WEB DESIGN
-          </p>
+            {highlightVisible ? (
+              <PointerHighlight>
+                <span className="text-center">Full-Stack Software Engineer</span>
+              </PointerHighlight>
+            ) : (
+              <span>Full-Stack Software Engineer</span>
+            )}
+          </div>
         </motion.div>
       </div>
     </section>

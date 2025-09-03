@@ -1,89 +1,34 @@
-// components/HeroImageSection.tsx
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-  useSpring,
-  useMotionValue,
-} from "framer-motion";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { useParallaxScaleY } from "@/hooks/useParallaxScaleY";
 
-export default function HeroImageSection() {
-  const [armed, setArmed] = useState(false);
-  const [sectionTop, setSectionTop] = useState(0); // valor inicial seguro
-  const [clientHeight, setClientHeight] = useState(0);
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const prefersReducedMotion = useReducedMotion();
+type Props = {
+  /** Imagen del hero (puede ser local o remota si está permitida en next.config.js) */
+  src?: string;
+  alt?: string;
+  /** altura del section; antes tenías h-[100svh] */
+  heightClassName?: string;
+  /** overlay oscuro por encima de la imagen */
+  overlay?: boolean;
+};
 
-  useEffect(() => {
-    const arm = () => setArmed(true);
-    if (document.documentElement.classList.contains("hero-subs-done")) {
-      setArmed(true);
-    }
-    window.addEventListener("hero:subs:done", arm);
-    return () => window.removeEventListener("hero:subs:done", arm);
-  }, []);
-
-  const measure = () => {
-    if (!sectionRef.current) return;
-    const rect = sectionRef.current.getBoundingClientRect();
-    setSectionTop(rect.top + window.scrollY);
-    setClientHeight(window.innerHeight);
-  };
-
-  useLayoutEffect(() => {
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
-  const { scrollY } = useScroll();
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
+export default function HeroImageSection({
+  src = "/images/retrato.jpg",
+  alt = "Hero image",
+  heightClassName = "h-[100svh]",
+  overlay = true,
+}: Props) {
+  // Mismas sensaciones que tu versión anterior
+  const { sectionRef, scale, y, armed } = useParallaxScaleY({
+    approachFactor: 0.2,
+    maxScale: 1.4,
+    minScale: 1.0,
+    yApproach: 40,
+    yInView: 40,
+    armedEventName: "hero:subs:done", // respeta tu gateo por evento
   });
-
-  const mvOne = useMotionValue(1);
-  const mvZero = useMotionValue(0);
-
-  const approachEnd = sectionTop + clientHeight * 0.2;
-
-  const scaleApproachMV = prefersReducedMotion
-    ? mvOne
-    : useTransform(scrollY, [0, approachEnd || 1], [1.4, 1.0]);
-
-  const scaleInViewMV = prefersReducedMotion
-    ? mvOne
-    : useTransform(scrollYProgress, [0, 1], [1.0, 0.98]);
-
-  const scaleCombined = prefersReducedMotion
-    ? mvOne
-    : useTransform(
-        [scaleApproachMV, scaleInViewMV] as const,
-        ([ga, iv]: readonly [number, number]) => ga * iv
-      );
-
-  const scale = prefersReducedMotion
-    ? mvOne
-    : useSpring(scaleCombined, { stiffness: 140, damping: 24, mass: 0.8 });
-
-  const yApproachMV = prefersReducedMotion
-    ? mvZero
-    : useTransform(scrollY, [0, approachEnd || 1], [0, 40]);
-
-  const yInViewMV = prefersReducedMotion
-    ? mvZero
-    : useTransform(scrollYProgress, [0, 1], [0, 40]);
-
-  const yCombined = prefersReducedMotion
-    ? mvZero
-    : useTransform(
-        [yApproachMV, yInViewMV] as const,
-        ([a, b]: readonly [number, number]) => a + b
-      );
 
   const dropIn = {
     off: { y: -60, opacity: 0 },
@@ -98,22 +43,29 @@ export default function HeroImageSection() {
       initial="off"
       animate={armed ? "on" : "off"}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      className="relative h-[100svh] w-full overflow-hidden"
+      className={`relative w-full overflow-hidden ${heightClassName}`}
     >
+      {/* Contenedor con parallax/scale */}
       <motion.div
-        style={{ scale, y: yCombined }}
+        style={{ scale, y }}
         className="absolute inset-0 will-change-transform transform-gpu"
       >
-        <div
-          className="absolute inset-0 bg-center bg-cover"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80')",
-          }}
-        />
+        {/* Necesitamos un wrapper relativo para <Image fill /> */}
+        <div className="relative h-full w-full">
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+        </div>
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 bg-black/25" />
+      {overlay && (
+        <div className="pointer-events-none absolute inset-0 bg-black/25" />
+      )}
     </motion.section>
   );
 }
