@@ -11,15 +11,18 @@ export default function Page() {
       <UpNavbar />
       <Hero />
 
-      <section className="h-[100vh] bg-neutral-900">
+      <section className="h-[100vh] bg-black">
         <HeroImageSection />
       </section>
 
-      <section className=" bg-neutral-900">
+      <section className="bg-black">
         <Skills />
       </section>
 
-      <Experience />
+      <section className="bg-black">
+        <Experience />
+      </section>
+
 
       <About />
 
