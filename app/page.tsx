@@ -1,7 +1,9 @@
 import About from "@/components/About";
+import EducationSection from "@/components/EducationSection";
 import { Experience } from "@/components/Experience";
 import Hero from "@/components/Hero";
 import HeroImageSection from "@/components/HeroImageSection";
+import ProfileSection from "@/components/ProfileSection";
 import Skills from "@/components/Skills";
 import UpNavbar from "@/components/UpNavbar";
 
@@ -22,6 +24,10 @@ export default function Page() {
       <Experience />
 
       <About />
+
+      <ProfileSection />
+
+      <EducationSection />
 
       {/* <main className="w-screen px-[5vw] py-16 space-y-24">
         <section id="work" className="min-h-[60vh]">

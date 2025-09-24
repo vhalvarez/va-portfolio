@@ -121,10 +121,10 @@ export default function Hero() {
             <br />
             {highlightVisible ? (
               <PointerHighlight>
-                <span className="text-center">Full-Stack Software Engineer</span>
+                <span className="text-center">Full-Stack Software Developer</span>
               </PointerHighlight>
             ) : (
-              <span>Full-Stack Software Engineer</span>
+              <span>Full-Stack Software Developer</span>
             )}
           </div>
         </motion.div>

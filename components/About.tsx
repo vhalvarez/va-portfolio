@@ -25,7 +25,7 @@ export default function About() {
         </p>
 
         {/* Imagen tipo poster con parallax/scale */}
-        <div ref={sectionRef} className="mt-6 sm:mt-10 flex justify-center">
+        <div ref={sectionRef} className="mt-6 sm:mt-10 flex justify-center p-10">
           <motion.figure
             style={{ scale, y }}
             initial={{ y: -60, opacity: 0 }}
@@ -43,6 +43,13 @@ export default function About() {
             />
           </motion.figure>
         </div>
+
+        <div className="mt-12 flex justify-center">
+          <p className="font-bold tracking-tight text-3xl text-center uppercase">
+            Full stack software developer with over 7 years of experience in creating innovative and secure digital platforms.
+          </p>
+        </div>
+
       </div>
     </section>
   );
