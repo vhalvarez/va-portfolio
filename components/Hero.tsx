@@ -72,7 +72,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="bg-neutral-900 text-white pt-[72px] sm:pt-[84px] lg:pt-[96px] pb-8 sm:pb-10"
+      className="bg-black text-white pt-[72px] sm:pt-[84px] lg:pt-[96px] pb-8 sm:pb-10"
     >
       <div className="px-4 sm:px-6 lg:px-8 min-h-0 md:min-h-[calc(60svh-96px)] flex flex-col">
         {/* Título 1 */}
