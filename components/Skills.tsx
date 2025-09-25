@@ -10,6 +10,7 @@ import { FaCube, FaCubes, FaSitemap, FaExchangeAlt, FaProjectDiagram, FaAws, FaJ
 import { TbHexagon } from "react-icons/tb";
 import { RiFlowChart } from "react-icons/ri";
 import { IoLayers } from "react-icons/io5";
+import { TypewriterEffectSmooth } from "./ui/typewriter-effect";
 
 const ICONS: Record<string, IconType> = {
   "JS": SiJavascript,
@@ -147,7 +148,7 @@ function SkillCard({ label }: { label: string }) {
 
   return (
     <div className="border border-white/[0.2] flex flex-col items-start max-w-sm mx-auto p-4 relative h-[30rem]">
-      {/* Esquinas decorativas */}
+      
       <Icon className="absolute h-6 w-6 -top-3 -left-3 text-white" />
       <Icon className="absolute h-6 w-6 -bottom-3 -left-3 d text-white" />
       <Icon className="absolute h-6 w-6 -top-3 -right-3 dark:text-whitetext-white" />
@@ -182,7 +183,8 @@ export default function Skills() {
         {GROUPS.map((group) => (
           <div key={group.title} className="space-y-4">
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight py-4">
-              {group.title}
+              <TypewriterEffectSmooth words={group.title} />
+              
             </h2>
 
            

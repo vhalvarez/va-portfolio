@@ -1,6 +1,6 @@
 export default function ProfileSection() {
   return (
-    <section className="px-6 py-20 md:py-28 bg-neutral-900 text-white">
+    <section className="px-6 py-20 md:py-28 bg-black text-white">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-[260px_1fr] lg:grid-cols-[320px_1fr] max-w-7xl mx-auto">
         {/* Columna izquierda — título grande */}
         <div className="md:sticky md:top-24 self-start">

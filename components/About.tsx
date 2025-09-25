@@ -15,7 +15,7 @@ export default function About() {
   });
 
   return (
-    <section className="bg-neutral-900 text-white pt-[80px] sm:pt-[84px] lg:pt-[96px] pb-12 sm:pb-16">
+    <section className="bg-black text-white pt-[80px] sm:pt-[84px] lg:pt-[96px] pb-12 sm:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <p className="font-medium leading-[0.82] tracking-tight text-[10vw] sm:text-[8vw] md:text-[6vw] lg:text-[10vw] text-center uppercase">
           More About
